@@ -2,11 +2,11 @@
 
 A tap-driven invite for Diwali card night: poker first, Teen Patti after.
 
-**Live:** https://shikhar-meesho.github.io/diwali-party/
+**Live:** https://shikhar-diwali-party.onrender.com/
 
 ## Personal links
-- Add `?to=Name` to the link, e.g. https://shikhar-meesho.github.io/diwali-party/?to=Bipin
-- Open https://shikhar-meesho.github.io/diwali-party/?host=1 (or tap the lit diya 5 times) to make links for a list of guests, each with a WhatsApp share button.
+- Add `?to=Name` to the link, e.g. https://shikhar-diwali-party.onrender.com/?to=Bipin
+- Open https://shikhar-diwali-party.onrender.com/?host=1 (or tap the lit diya 5 times) to make links for a list of guests, each with a WhatsApp share button.
 
 ## Files
 - `index.html`: the invite (edit the `PARTY` object at the top of the script to change details)

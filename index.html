@@ -84,9 +84,10 @@ body.lit .tap{opacity:0;animation:none}
 @media (min-width:900px){.spread{grid-template-columns:repeat(4,var(--cw))}}
 .deck{position:absolute;left:50%;top:50%;width:calc(var(--cw)*.62);height:calc(var(--cw)*.87);transform:translate(-50%,-50%);cursor:pointer;border:0;padding:0;background:none;transition:opacity .35s;z-index:2}
 .deck.gone{opacity:0;pointer-events:none}
+#shuffleBtn{position:absolute;left:0;right:0;bottom:4%;margin:0 auto;width:max-content;z-index:3}
 .dcard{position:absolute;inset:0;border-radius:10px;will-change:transform;transform-origin:50% 165%;perspective:800px}
 .dinner{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateY(180deg);transition:transform .45s cubic-bezier(.3,1.3,.5,1);border-radius:inherit}
-.dcard.up .dinner{transform:none}
+.dcard.up .dinner,.hcard.up .dinner{transform:none}
 .dface{position:absolute;inset:0;border-radius:inherit;background:var(--ivory);color:var(--card-ink);backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 8px 20px rgba(0,0,0,.4);display:grid;place-items:center}
 .dface.red{color:var(--rani)}
 .dface b{position:absolute;top:6%;left:10%;font-family:"Fraunces",serif;font-weight:600;font-size:calc(var(--cw)*.15);line-height:1}
@@ -107,6 +108,33 @@ body.lit .tap{opacity:0;animation:none}
 .pcard .face .suit{position:absolute;top:.6rem;right:.8rem;font-size:1.1rem}
 .pcard .face .suit.red{color:var(--rani)}
 .tablefoot{min-height:3.4rem;display:grid;place-items:center}
+.caption{font-family:"Fraunces",serif;font-style:italic;color:var(--gold);font-size:clamp(1.3rem,5.5vw,1.8rem);min-height:1.4em;margin:0;transition:opacity .35s ease}
+.caption.hide{opacity:0}
+.dface em{position:absolute;left:0;right:0;bottom:7%;text-align:center;font-family:"Fraunces",serif;font-style:italic;font-size:calc(var(--cw)*.1);line-height:1}
+.deck.picking .dcard{cursor:pointer}
+
+/* ===== Teen Patti hand ===== */
+#hand h2{font-size:clamp(2rem,8vw,3.4rem);line-height:1.05;max-width:14ch}
+.hand{--cw:clamp(104px,min(38vw,22svh),170px);display:flex;flex-direction:column;gap:.6rem;align-items:center}
+@media (max-height:700px){.scene{padding:1.5rem 1rem;gap:1rem}}
+.seat{display:flex;flex-direction:column;align-items:center;gap:.45rem}
+.seat .who{color:var(--muted);font-size:.95rem;margin:0}
+.row3{display:flex;gap:.6rem}
+.hcard{pointer-events:none;position:relative;width:calc(var(--cw)*.62);height:calc(var(--cw)*.87);border-radius:10px;perspective:800px;opacity:0;transform:translateY(-40vh) rotate(-20deg)}
+.hcard.in{opacity:1;transform:none;transition:transform .6s cubic-bezier(.25,1.2,.4,1),opacity .2s ease}
+.hcard.win .dface{box-shadow:0 0 0 2px var(--gold),0 0 28px rgba(244,165,28,.55)}
+.verdict{font-family:"Fraunces",serif;font-style:italic;color:var(--gold);min-height:1.4em;margin:0;font-size:1.15rem;opacity:0;transition:opacity .4s ease}
+.verdict.in{opacity:1}
+#handLine{font-size:clamp(1.5rem,6vw,2.2rem);font-family:"Fraunces",serif;font-weight:300;max-width:16ch;margin:0}
+.handfoot{min-height:3.4rem;display:grid;place-items:center}
+.handfoot > *{grid-area:1/1}
+
+/* ===== Sparkler signature ===== */
+.sig{position:relative;width:min(100%,360px);height:150px;border-radius:16px;border:1px dashed rgba(233,196,106,.45);background:rgba(34,20,74,.45);touch-action:none}
+.sig canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:inherit}
+.sig-hint{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:var(--muted);font-family:"Fraunces",serif;font-style:italic;font-size:1.2rem;pointer-events:none;transition:opacity .4s}
+.sig.inked .sig-hint{opacity:0}
+#sigDone{position:relative;margin:0;color:var(--gold);font-weight:600}
 .tablefoot > *{grid-area:1/1}
 
 /* ===== 3. Are you in? ===== */
@@ -189,14 +217,26 @@ dialog textarea{min-height:110px}
 
   <section class="scene" id="table">
     <h2>Poker first. Teen&nbsp;Patti after.</h2>
+    <p class="caption hide" id="tableCap" aria-live="polite">&nbsp;</p>
     <div class="stage">
       <div class="spread" id="spread"></div>
       <button class="deck" id="deck" aria-label="Shuffle and deal"></button>
+      <button class="pill" id="shuffleBtn">Shuffle and deal</button>
     </div>
     <div class="tablefoot">
-      <button class="pill" id="shuffleBtn">Shuffle and deal</button>
       <button class="chev reveal" id="toRsvp">Continue<span>↓</span></button>
     </div>
+  </section>
+
+  <section class="scene" id="hand">
+    <h2>One hand. You vs Shikhar.</h2>
+    <div class="hand">
+      <div class="seat"><p class="who" id="hostSeat">Shikhar</p><div class="row3" id="hostRow"></div><p class="verdict" id="hostVerdict">Pair of kings</p></div>
+      <div class="handfoot"><button class="pill reveal" id="showBtn">Show</button></div>
+      <div class="seat"><p class="who" id="guestSeat">You</p><div class="row3" id="guestRow"></div><p class="verdict" id="guestVerdict">Trail of aces</p></div>
+    </div>
+    <p id="handLine" class="reveal">Beginner’s luck. Prove it on 31 Oct.</p>
+    <button class="chev reveal" id="toRsvp2">Continue<span>↓</span></button>
   </section>
 
   <section class="scene" id="rsvp">
@@ -211,6 +251,8 @@ dialog textarea{min-height:110px}
     <canvas id="fireworks" aria-hidden="true"></canvas>
     <h2 id="finTitle">See you at the table.</h2>
     <p class="recap" id="recap"></p>
+    <div class="sig" id="sig"><canvas id="ink"></canvas><canvas id="sparks"></canvas><p class="sig-hint">Sign with a sparkler</p></div>
+    <p id="sigDone" class="reveal">Seat locked.</p>
     <div class="actions">
       <a class="pill" id="calLink" target="_blank" rel="noopener">Add to calendar</a>
       <a class="pill ghost" id="waLink" target="_blank" rel="noopener">Message Shikhar</a>
@@ -317,9 +359,11 @@ $("#toTable").addEventListener("click",()=>go("table"));
 const deck=$("#deck");
 const RANKS=[["A","♠"],["K","♥"],["Q","♦"],["J","♣"],["10","♠"],["A","♥"],["K","♣"],["Q","♥"],["J","♦"],["A","♦"],["K","♠"]];
 const N=RANKS.length;
+const youName = guest || "You", youInit = youName.charAt(0).toUpperCase();
 RANKS.forEach(([r,s],i)=>{ const red=s==="♥"||s==="♦";
   const d=document.createElement("div"); d.className="dcard";
-  d.innerHTML=`<div class="dinner"><div class="dface ${red?"red":""}"><b>${r}</b><i>${s}</i></div><div class="back"></div></div>`;
+  d.innerHTML=`<div class="dinner"><div class="dface ${red?"red":""}"><b>${youInit}</b><i>${s}</i><em></em></div><div class="back"></div></div>`;
+  d.querySelector("em").textContent=youName;
   d.style.transform=`translate(0,${-i*1.5}px)`; deck.appendChild(d); });
 const dcards=[...deck.children];
 
@@ -337,13 +381,15 @@ pcards.forEach((b,i)=>{
   b.addEventListener("click",()=>{
     b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true");
     seen.add(i);
-    if(seen.size===pcards.length && !movedOn){ movedOn=true; setTimeout(()=>go("rsvp"), reduce?0:1100); }
+    if(seen.size===pcards.length && !movedOn){ movedOn=true; setTimeout(()=>go("hand"), reduce?0:1100); }
   });
 });
 
 const move=(el,t,ms,delay=0,ease="cubic-bezier(.3,.8,.3,1)")=>{ el.style.transition=reduce?"none":`transform ${ms}ms ${ease} ${delay}ms`; el.style.transform=t; };
 const stack=(c,i)=>`translate(0,${-i*1.5}px) rotate(0deg)`;
-let dealt=false, busy=false;
+let dealt=false, busy=false, pickResolve=null;
+const capEl=$("#tableCap");
+function setCap(t){ if(!t){ capEl.classList.add("hide"); return; } capEl.classList.add("hide"); setTimeout(()=>{ capEl.textContent=t; capEl.classList.remove("hide"); }, reduce?0:180); }
 async function shuffleAndDeal(){
   if(dealt||busy) return; busy=true;
   $("#shuffleBtn").classList.add("reveal");
@@ -359,15 +405,30 @@ async function shuffleAndDeal(){
   await sleep(220);
   dcards.forEach((c,i)=>move(c,stack(c,i),220,i*12,"cubic-bezier(.3,1.5,.5,1)"));
   await sleep(380);
-  // fan out face up
+  // fan out face down and let them pick
   const fan=i=>-38+i*(76/(N-1));
   dcards.forEach((c,i)=>move(c,`translate(0,0) rotate(${fan(i)}deg)`,600,i*28,"cubic-bezier(.2,1,.3,1.1)"));
   await sleep(500+N*28);
-  dcards.forEach((c,i)=>setTimeout(()=>c.classList.add("up"), reduce?0:i*55));
-  await sleep(N*55+900);
+  setCap("Pick a card. Any card.");
+  deck.classList.add("picking"); deck.setAttribute("aria-label","Pick a card");
+  const picked = await new Promise(res=>{ pickResolve=res; });
+  deck.classList.remove("picking");
+  // their card rises and turns over
+  picked.style.zIndex=40;
+  move(picked,`translate(0,-34px) rotate(0deg) scale(1.16)`,450,0,"cubic-bezier(.3,1.4,.5,1)");
+  await sleep(420);
+  picked.classList.add("up");
+  setCap("Is this your card?");
+  await sleep(1500);
+  // ...so is every other one
+  dcards.filter(c=>c!==picked).forEach((c,i)=>setTimeout(()=>c.classList.add("up"), reduce?0:i*60));
+  await sleep(320); setCap("So is every other one.");
+  await sleep(N*60+1300);
   // flip back, sweep closed
   dcards.forEach((c,i)=>setTimeout(()=>c.classList.remove("up"), reduce?0:(N-i)*35));
   await sleep(N*35+420);
+  picked.style.zIndex="";
+  setCap("");
   dcards.forEach((c,i)=>move(c,stack(c,i),480,(N-i)*18,"cubic-bezier(.6,0,.2,1)"));
   await sleep(480+N*18+120);
   // deal the four detail cards out of the deck
@@ -385,9 +446,41 @@ async function shuffleAndDeal(){
   $("#toRsvp").classList.add("in");
   dealt=true; busy=false;
 }
-deck.addEventListener("click",shuffleAndDeal);
+deck.addEventListener("click",e=>{
+  if(pickResolve){ const c=e.target.closest(".dcard"); if(c){ const r=pickResolve; pickResolve=null; r(c); } return; }
+  shuffleAndDeal();
+});
 $("#shuffleBtn").addEventListener("click",shuffleAndDeal);
-$("#toRsvp").addEventListener("click",()=>{ movedOn=true; go("rsvp"); });
+$("#toRsvp").addEventListener("click",()=>{ movedOn=true; go("hand"); });
+
+/* ---------- Rigged Teen Patti hand ---------- */
+const mk=(r,s)=>{ const red=s==="♥"||s==="♦"; const d=document.createElement("div"); d.className="hcard";
+  d.innerHTML=`<div class="dinner"><div class="dface ${red?"red":""}"><b>${r}</b><i>${s}</i></div><div class="back"></div></div>`; return d; };
+const hostCards=[["K","♠"],["K","♥"],["7","♦"]].map(([r,s])=>mk(r,s));
+const guestCards=[["A","♠"],["A","♥"],["A","♦"]].map(([r,s])=>mk(r,s));
+hostCards.forEach(c=>$("#hostRow").appendChild(c)); guestCards.forEach(c=>$("#guestRow").appendChild(c));
+$("#hostSeat").textContent=PARTY.host; $("#guestSeat").textContent=guest||"You";
+let handDealt=false, handShown=false, handMoved=false;
+function dealHand(){
+  if(handDealt) return; handDealt=true;
+  [...hostCards,...guestCards].forEach((c,i)=>setTimeout(()=>c.classList.add("in"), reduce?0:120+i*130));
+  setTimeout(()=>$("#showBtn").classList.add("in"), reduce?0:120+6*130+500);
+}
+new IntersectionObserver((es,o)=>{ if(es[0].isIntersecting){ dealHand(); o.disconnect(); } },{threshold:.45}).observe($("#hand"));
+$("#showBtn").addEventListener("click",async()=>{
+  if(handShown) return; handShown=true; dealHand();
+  $("#showBtn").classList.remove("in");
+  hostCards.forEach((c,i)=>setTimeout(()=>c.classList.add("up"), reduce?0:i*160));
+  await sleep(700); $("#hostVerdict").classList.add("in");
+  await sleep(700);
+  guestCards.forEach((c,i)=>setTimeout(()=>c.classList.add("up"), reduce?0:i*220));
+  await sleep(900);
+  guestCards.forEach(c=>c.classList.add("win")); $("#guestVerdict").classList.add("in");
+  await sleep(500); $("#handLine").classList.add("in");
+  await sleep(400); $("#toRsvp2").classList.add("in");
+  setTimeout(()=>{ if(!handMoved){ handMoved=true; go("rsvp"); } }, reduce?0:2200);
+});
+$("#toRsvp2").addEventListener("click",()=>{ handMoved=true; go("rsvp"); });
 
 /* ---------- Are you in? NO turns into ON ---------- */
 const noBtn=$("#noBtn"); let dodges=0, flipped=false;
@@ -445,7 +538,7 @@ let accepted=false;
 function accept(){
   if(accepted) return; accepted=true;
   $("#finale").classList.add("on");
-  requestAnimationFrame(()=>{ go("finale",1100); setTimeout(fireworks, reduce?0:900); });
+  requestAnimationFrame(()=>{ window.__sigSize&&window.__sigSize(); go("finale",1100); setTimeout(fireworks, reduce?0:900); });
 }
 function fireworks(){
   if(reduce) return;
@@ -463,6 +556,33 @@ function fireworks(){
     if(parts.length||t-t0<2000) requestAnimationFrame(loop); else ctx.clearRect(0,0,W,H);
   })(t0);
 }
+
+/* ---------- Sparkler signature ---------- */
+(function(){
+  const box=$("#sig"), ink=$("#ink"), sp=$("#sparks"), ic=ink.getContext("2d"), sc=sp.getContext("2d");
+  const dpr=Math.min(devicePixelRatio||1,2); let W=0,H=0, last=null, total=0, locked=false, parts=[], running=false;
+  function size(){ const r=box.getBoundingClientRect(); if(!r.width) return; W=r.width; H=r.height;
+    [ink,sp].forEach(c=>{ c.width=W*dpr; c.height=H*dpr; c.getContext("2d").setTransform(dpr,0,0,dpr,0,0); }); }
+  const pt=e=>{ const r=box.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; };
+  function spark(x,y,n){ if(reduce) return; for(let i=0;i<n;i++){ const a=Math.random()*Math.PI*2, v=1+Math.random()*3.2;
+    parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-1,l:1,c:Math.random()<.7?"#FFE7A8":"#F4A51C"}); }
+    if(!running){ running=true; requestAnimationFrame(loop); } }
+  function loop(){ sc.clearRect(0,0,W,H);
+    parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.08; p.l-=.04; if(p.l>0){ sc.globalAlpha=p.l; sc.strokeStyle=p.c; sc.lineWidth=1.4;
+      sc.beginPath(); sc.moveTo(p.x,p.y); sc.lineTo(p.x-p.vx*2.2,p.y-p.vy*2.2); sc.stroke(); } });
+    parts=parts.filter(p=>p.l>0); if(parts.length) requestAnimationFrame(loop); else { running=false; sc.clearRect(0,0,W,H); } }
+  box.addEventListener("pointerdown",e=>{ e.preventDefault(); if(!W) size(); box.setPointerCapture(e.pointerId); last=pt(e); box.classList.add("inked"); spark(last.x,last.y,10); });
+  box.addEventListener("pointermove",e=>{ if(!last) return; const p=pt(e);
+    ic.strokeStyle="#F4C25B"; ic.lineWidth=2.6; ic.lineCap="round"; ic.lineJoin="round"; ic.shadowColor="#F4A51C"; ic.shadowBlur=10;
+    ic.beginPath(); ic.moveTo(last.x,last.y); ic.lineTo(p.x,p.y); ic.stroke();
+    total+=Math.hypot(p.x-last.x,p.y-last.y); spark(p.x,p.y,3); last=p; });
+  const end=()=>{ if(!last) return; last=null;
+    if(total>160 && !locked){ locked=true; $("#sigDone").classList.add("in"); spark(W/2,H/2,40); } };
+  box.addEventListener("pointerup",end); box.addEventListener("pointercancel",end);
+  addEventListener("resize",()=>{ if(!locked && !total) size(); });
+  window.__sigSize=size;
+})();
+$("#sigDone").textContent = guest ? `Seat locked, ${guest}.` : "Seat locked.";
 
 /* ---------- Ambient: rising embers and a few drifting suits ---------- */
 function startAmbient(){

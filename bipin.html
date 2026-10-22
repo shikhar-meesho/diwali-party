@@ -495,7 +495,7 @@ $("#makeLinks").addEventListener("click",()=>{
     cp.addEventListener("click",async()=>{ try{ await navigator.clipboard.writeText(url); cp.textContent="Copied"; }
       catch(e){ const r=document.createRange(); r.selectNodeContents(sp); const s=getSelection(); s.removeAllRanges(); s.addRange(r); cp.textContent="Selected"; } });
     const wa=document.createElement("a"); wa.className="mini ghost"; wa.textContent="WhatsApp"; wa.target="_blank"; wa.rel="noopener";
-    wa.href="https://wa.me/?text="+encodeURIComponent(`${nm}, you’ve been dealt in 🪔♠️ ${url}`);
+    wa.href="https://wa.me/?text="+encodeURIComponent(`${nm}, there’s a seat with your name on it this Diwali 🪔\nDress like you’ve already won. Your cards are here: ${url}`);
     row.append(sp,cp,wa); box.appendChild(row);
   });
 });
